@@ -1,0 +1,4 @@
+rootProject.name = 'eircode-parent'
+
+include 'eircode-backend'
+include 'eircode-frontend'

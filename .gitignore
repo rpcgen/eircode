@@ -1,0 +1,14 @@
+#idea
+.idea
+*.iml
+
+#java
+*.class
+
+#maven/gradle
+.gradle
+target
+build
+
+#custom
+version

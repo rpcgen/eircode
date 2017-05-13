@@ -16,5 +16,12 @@ bootRepackage {
 }
 
 dependencies {
+
+    // spring mvc
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+
+    // spring cache + ehcache
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
+    compile group: 'net.sf.ehcache', name: 'ehcache', version: '2.10.3'
+
 }

@@ -33,10 +33,16 @@ public class AddressKeyGenerator implements KeyGenerator {
     }
 
     private Object transform(Object param) {
+
+        if (param == null)
+            return null;
+
         Map<String, String> result = new HashMap<>();
+
         ((Map<String, String[]>) param)
                 .entrySet()
                 .forEach((Map.Entry<String, String[]> x) -> result.put(x.getKey(), Arrays.toString(x.getValue())));
+
         return result;
     }
 }

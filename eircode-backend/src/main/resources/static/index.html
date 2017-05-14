@@ -17,21 +17,53 @@
 
     app.controller('addressController', function($scope, $http) {
         $scope.request = {
-            fragment : '',
-            lines    : 1,
-            include  : '',
-            exclude  : '',
-            identifier : '',
-            addtags : false,
-            postcodeonly : false,
-            alias : false,
-            page : 0
+            main : {
+                fragment : '',
+                service  : 'ie'
+            },
+            options : {
+                lines        : 1,
+                include      : '',
+                exclude      : '',
+                identifier   : '',
+                addtags      : false,
+                postcodeonly : false,
+                alias        : false,
+                page         : 0
+            }
         };
 
         $scope.submit = function() {
-            $http.get("http://localhost:8080/v1/get-address/" + $scope.request.service + "/" + $scope.request.fragment, { cache: true})
-                .then(function(response) {
+
+            var fragment = $scope.request.main.fragment
+            var service  = $scope.request.main.service
+            var options = {
+                lines        : $scope.request.options.lines,
+                addtags      : $scope.request.options.addtags,
+                postcodeonly : $scope.request.options.postcodeonly,
+                alias        : $scope.request.options.alias,
+                page         : $scope.request.options.page
+            };
+
+
+            if ($scope.request.options.include != '')
+                options.include = $scope.request.options.include;
+
+            if ($scope.request.options.exclude != '')
+                options.exclude = $scope.request.options.exclude;
+
+            if ($scope.request.options.identifier != '')
+                options.identifier = $scope.request.options.identifier;
+
+            $http.get("http://localhost:8080/v1/get-address/" + service + "/" + fragment, {
+                params : options,
+                cache  : true
+            }).then(
+                function(response) {
                     $scope.myWelcome = JSON.stringify(response.data, null, 2);
+                },
+                function(response) {
+                    $scope.myWelcome = 'Ups this is some kind of error, contact support ;)';
                 });
         };
     });
@@ -52,10 +84,10 @@
                 <fieldset id="main">
                     <div class="form-group">
                         <label for="fragment">fragment</label>
-                        <input type="text" id="fragment" class="form-control" ng-model="request.fragment"/>
+                        <input type="text" id="fragment" class="form-control" ng-model="request.main.fragment"/>
                     </div>
 
-                    <select id="service" class="form-control" ng-model="request.service">
+                    <select id="service" class="form-control" ng-model="request.main.service">
                         <option>ie</option>
                         <option>uk</option>
                     </select>
@@ -64,32 +96,32 @@
                 <fieldset id="options">
                     <div class="form-group">
                         <label for="lines">lines</label>
-                        <input type="number" min="1" id="lines" class="form-control" ng-model="request.lines"/>
+                        <input type="number" min="1" id="lines" class="form-control" ng-model="request.options.lines"/>
                     </div>
                     <div class="checkboxx">
                         <label for="include">include</label>
-                        <input type="text" id="include" class="form-control" ng-model="request.include"/>
+                        <input type="text" id="include" class="form-control" ng-model="request.options.include"/>
                     </div>
                     <div class="form-group">
                         <label for="exclude">exclude</label>
-                        <input type="text" id="exclude" class="form-control" ng-model="request.exclude"/>
+                        <input type="text" id="exclude" class="form-control" ng-model="request.options.exclude"/>
                     </div>
                     <div class="form-group">
                         <label for="identifier">identifier</label>
-                        <input type="text" id="identifier" class="form-control" ng-model="request.identifier"/>
+                        <input type="text" id="identifier" class="form-control" ng-model="request.options.identifier"/>
                     </div>
                     <div class="checkbox">
-                        <label for="addtags"><input type="checkbox" id="addtags" ng-model="request.addtags"/> add tags</label>
+                        <label for="addtags"><input type="checkbox" id="addtags" ng-model="request.options.addtags"/> add tags</label>
                     </div>
                     <div class="checkbox">
-                        <label for="postcodeonly"><input type="checkbox" id="postcodeonly" ng-model="request.postcodeonly"/> postcode only</label>
+                        <label for="postcodeonly"><input type="checkbox" id="postcodeonly" ng-model="request.options.postcodeonly"/> postcode only</label>
                     </div>
                     <div class="checkbox">
-                        <label for="alias"><input type="checkbox" id="alias" ng-model="request.alias"/> alias</label>
+                        <label for="alias"><input type="checkbox" id="alias" ng-model="request.options.alias"/> alias</label>
                     </div>
                     <div class="form-group">
                         <label for="page">page</label>
-                        <input type="number" min="0" id="page" class="form-control" ng-model="request.page"/>
+                        <input type="number" min="0" id="page" class="form-control" ng-model="request.options.page"/>
                     </div>
                 </fieldset>
 

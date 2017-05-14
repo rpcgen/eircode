@@ -1,2 +1,9 @@
+spring:
+  datasource:
+    url : jdbc:h2:file:./cache
+  jpa:
+    hibernate:
+      ddl-auto: update
+
 alliesComputing:
   apiKey: PCW45-12345-12345-1234X

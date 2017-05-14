@@ -22,7 +22,10 @@ dependencies {
 
     // spring cache + ehcache
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
-    compile group: 'net.sf.ehcache', name: 'ehcache', version: '2.10.3'
+
+    // spring jpa + h2
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    compile group: 'com.h2database', name: 'h2'
 
     // testing
     // -------

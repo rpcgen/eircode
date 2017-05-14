@@ -1,19 +1,25 @@
 package com.fexco.alliesComputing;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Map.Entry;
 
+@Component
 @CacheConfig(cacheNames = "address-cache")
 public class AddressClient {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AddressClient.class);
 
     private static final String PATH_FORMAT = "/pcw/%s/address/%s/%s";
 
@@ -33,7 +39,7 @@ public class AddressClient {
 
     private String host;
 
-    @Value("${alliesComputing.host:ws.postcoder.com")
+    @Value("${alliesComputing.host:ws.postcoder.com}")
     public void setHost(String host) {
         this.host = host;
     }
@@ -45,7 +51,7 @@ public class AddressClient {
         this.apiKey = apiKey;
     }
 
-    @Cacheable(keyGenerator= "AddressKeyGenerator")
+    @Cacheable(keyGenerator= "addressKeyGenerator")
     public ResponseEntity<String> forwardRequestToAlliesComputing(
             String alpha2,
             String fragment,
@@ -60,6 +66,9 @@ public class AddressClient {
             for (String value : param.getValue())
                 uriBuilder.addParameter(param.getKey(), value);
 
+        String url = uriBuilder.build().toString();
+
+        LOG.info(url);
         return restTemplate.getForEntity(uriBuilder.build().toString(), String.class);
     }
 }

@@ -13,7 +13,6 @@ class AddressClientSpec extends Specification {
 
     @Unroll
     void "test address client against the example request (#country)"() {
-        //http://ws.postcoder.com/pcw/PCW45-12345-12345-1234X/address/ie/D02X285?lines=3&format=json
 
         given:
         AddressClient addressClient = new AddressClient()
@@ -23,7 +22,7 @@ class AddressClientSpec extends Specification {
         addressClient.restTemplate = new RestTemplate()
 
         when:
-        ResponseEntity<String> response = addressClient.forwardRequestToAlliesComputing('ie', 'D02X285',
+        ResponseEntity<String> response = addressClient.forwardRequestToAlliesComputing(country, 'D02X285',
                 [
                         'lines'  : ['3']    as String[],
                         'format' : ['json'] as String[]
@@ -31,7 +30,7 @@ class AddressClientSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
-        response.body == IE_EXPECTED_RESPONSE
+        response.body == expected_response
 
         where:
         country | expected_response

@@ -1,19 +1,16 @@
 package com.fexco.eircode.controller;
 
 import com.fexco.alliesComputing.AddressClient;
-import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
 import java.net.URISyntaxException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +21,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RequestMapping("/v1")
 public class EircodeController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(EircodeController.class);
+
     private AddressClient addressClient;
 
     @Autowired
@@ -31,22 +30,14 @@ public class EircodeController {
         this.addressClient = addressClient;
     }
 
-    @Value("alliesComputing.apiKey")
-    private String apiKey;
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    @Cacheable
     @RequestMapping(
             path     = "/get-address/{alpha2}/{fragment}",
             method   = GET,
-            produces = APPLICATION_JSON_VALUE,
-            consumes = APPLICATION_JSON_VALUE)
+            produces = APPLICATION_JSON_VALUE)
+
     public ResponseEntity<?> getAddress(
-            @PathParam("alpha2")   String alpha2,
-            @PathParam("fragment") String fragment,
+            @PathVariable("alpha2")   String alpha2,
+            @PathVariable("fragment") String fragment,
             HttpServletRequest httpServletRequest) throws URISyntaxException {
 
         if (isCountrySupported(alpha2))

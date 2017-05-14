@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <!-- angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script>
+    var app = angular.module('eircode', []);
+
+    app.controller('addressController', function($scope, $http) {
+        $scope.request = {
+            fragment : '',
+            lines    : 1,
+            include  : '',
+            exclude  : '',
+            identifier : '',
+            addtags : false,
+            postcodeonly : false,
+            alias : false,
+            page : 0
+        };
+
+        $scope.submit = function() {
+            $http.get("http://localhost:8080/v1/get-address/" + $scope.request.service + "/" + $scope.request.fragment, { cache: true})
+                .then(function(response) {
+                    $scope.myWelcome = JSON.stringify(response.data, null, 2);
+                });
+        };
+    });
+    </script>
+</head>
+<body ng-app="eircode">
+
+    <div ng-controller="addressController">
+
+    <div class="container">
+    <div class="row">
+        <div class="col-xs-4">
+
+            <form>
+
+                <h2>REQUEST</h2>
+
+                <fieldset id="main">
+                    <div class="form-group">
+                        <label for="fragment">fragment</label>
+                        <input type="text" id="fragment" class="form-control" ng-model="request.fragment"/>
+                    </div>
+
+                    <select id="service" class="form-control" ng-model="request.service">
+                        <option>ie</option>
+                        <option>uk</option>
+                    </select>
+                </fieldset>
+
+                <fieldset id="options">
+                    <div class="form-group">
+                        <label for="lines">lines</label>
+                        <input type="number" min="1" id="lines" class="form-control" ng-model="request.lines"/>
+                    </div>
+                    <div class="checkboxx">
+                        <label for="include">include</label>
+                        <input type="text" id="include" class="form-control" ng-model="request.include"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="exclude">exclude</label>
+                        <input type="text" id="exclude" class="form-control" ng-model="request.exclude"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="identifier">identifier</label>
+                        <input type="text" id="identifier" class="form-control" ng-model="request.identifier"/>
+                    </div>
+                    <div class="checkbox">
+                        <label for="addtags"><input type="checkbox" id="addtags" ng-model="request.addtags"/> add tags</label>
+                    </div>
+                    <div class="checkbox">
+                        <label for="postcodeonly"><input type="checkbox" id="postcodeonly" ng-model="request.postcodeonly"/> postcode only</label>
+                    </div>
+                    <div class="checkbox">
+                        <label for="alias"><input type="checkbox" id="alias" ng-model="request.alias"/> alias</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="page">page</label>
+                        <input type="number" min="0" id="page" class="form-control" ng-model="request.page"/>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="btn btn-default" ng-click="submit()">Submit</button>
+
+            </form>
+        </div>
+
+        <div class="col-xs-8">
+            <h2>RESPONSE</h2>
+
+            <div><pre>{{myWelcome}}</pre></div>
+        </div>
+    </div>
+    </div>
+
+    </div>
+
+</body>
+</html>
